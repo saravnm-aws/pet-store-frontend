@@ -51,11 +51,14 @@ describe('PetDetail', () => {
       expect(screen.getByText('Buddy')).toBeInTheDocument();
     });
 
-    expect(screen.getByText('Species: Dog')).toBeInTheDocument();
-    expect(screen.getByText('Breed: Golden Retriever')).toBeInTheDocument();
-    expect(screen.getByText('Age: 3')).toBeInTheDocument();
-    expect(screen.getByText('Price: $299.99')).toBeInTheDocument();
-    expect(screen.getByText('Description: A friendly dog')).toBeInTheDocument();
+    expect(screen.getByText('Species')).toBeInTheDocument();
+    expect(screen.getByText('Dog')).toBeInTheDocument();
+    expect(screen.getByText('Breed')).toBeInTheDocument();
+    expect(screen.getByText('Golden Retriever')).toBeInTheDocument();
+    expect(screen.getByText('Age')).toBeInTheDocument();
+    expect(screen.getByText('3 years')).toBeInTheDocument();
+    expect(screen.getByText('$299.99')).toBeInTheDocument();
+    expect(screen.getByText('A friendly dog')).toBeInTheDocument();
   });
 
   it('calls getPetById with the route param id', async () => {
@@ -97,7 +100,7 @@ describe('PetDetail', () => {
       expect(screen.getByText('Buddy')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
+    fireEvent.click(screen.getByRole('button', { name: /Delete Pet/ }));
 
     await waitFor(() => {
       expect(ApiService.deletePet).toHaveBeenCalledWith('test-id');
@@ -114,7 +117,7 @@ describe('PetDetail', () => {
       expect(screen.getByText('Buddy')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
+    fireEvent.click(screen.getByRole('button', { name: /Delete Pet/ }));
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent('Error: Delete failed');
