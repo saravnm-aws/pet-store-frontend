@@ -25,6 +25,11 @@ const ApiService = {
     return response.data;
   },
 
+  async updatePet(id, data) {
+    const response = await apiClient.put(`/pets/${id}`, data);
+    return response.data;
+  },
+
   async deletePet(id) {
     const response = await apiClient.delete(`/pets/${id}`);
     return response.data;

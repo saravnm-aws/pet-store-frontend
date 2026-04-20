@@ -123,4 +123,16 @@ describe('PetDetail', () => {
       expect(screen.getByRole('alert')).toHaveTextContent('Error: Delete failed');
     });
   });
+
+  it('renders Edit link pointing to edit page', async () => {
+    ApiService.getPetById.mockResolvedValue(samplePet);
+    renderPetDetail();
+
+    await waitFor(() => {
+      expect(screen.getByText('Buddy')).toBeInTheDocument();
+    });
+
+    const editLink = screen.getByRole('link', { name: /Edit Pet/ });
+    expect(editLink).toHaveAttribute('href', '/pets/test-id/edit');
+  });
 });

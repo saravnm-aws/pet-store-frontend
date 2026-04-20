@@ -14,6 +14,7 @@ describe('ApiService', () => {
     mockAxiosInstance = {
       get: vi.fn(),
       post: vi.fn(),
+      put: vi.fn(),
       delete: vi.fn(),
     };
     axios.create.mockReturnValue(mockAxiosInstance);
@@ -87,6 +88,27 @@ describe('ApiService', () => {
       mockAxiosInstance.post.mockRejectedValue(error);
 
       await expect(ApiService.createPet({})).rejects.toThrow('Bad Request');
+    });
+  });
+
+  describe('updatePet', () => {
+    it('calls PUT /pets/:id with data and returns updated pet', async () => {
+      const petData = { name: 'Buddy Updated', species: 'Dog', price: 350 };
+      const updated = { petId: 'abc', ...petData };
+      mockAxiosInstance.put.mockResolvedValue({ data: updated });
+
+      const result = await ApiService.updatePet('abc', petData);
+
+      expect(mockAxiosInstance.put).toHaveBeenCalledWith('/pets/abc', petData);
+      expect(result).toEqual(updated);
+    });
+
+    it('propagates errors', async () => {
+      const error = new Error('Not Found');
+      error.response = { status: 404, data: { error: 'Pet not found' } };
+      mockAxiosInstance.put.mockRejectedValue(error);
+
+      await expect(ApiService.updatePet('nonexistent', {})).rejects.toThrow('Not Found');
     });
   });
 

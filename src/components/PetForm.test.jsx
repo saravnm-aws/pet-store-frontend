@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import PetForm from './PetForm';
 import ApiService from '../services/ApiService';
@@ -145,6 +145,105 @@ describe('PetForm', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Adding...' })).toBeDisabled();
+    });
+  });
+});
+
+describe('PetForm (edit mode)', () => {
+  const samplePet = {
+    petId: 'test-id',
+    name: 'Buddy',
+    species: 'Dog',
+    breed: 'Golden Retriever',
+    age: 3,
+    price: 299.99,
+    description: 'A friendly dog',
+  };
+
+  function renderPetFormEdit(id = 'test-id') {
+    return render(
+      <MemoryRouter initialEntries={[`/pets/${id}/edit`]}>
+        <Routes>
+          <Route path="/pets/:id/edit" element={<PetForm />} />
+        </Routes>
+      </MemoryRouter>
+    );
+  }
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('shows loading state while fetching pet data', () => {
+    ApiService.getPetById.mockReturnValue(new Promise(() => {}));
+    renderPetFormEdit();
+    expect(screen.getByText('Loading pet data...')).toBeInTheDocument();
+  });
+
+  it('pre-populates form with existing pet data', async () => {
+    ApiService.getPetById.mockResolvedValue(samplePet);
+    renderPetFormEdit();
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/Name/).value).toBe('Buddy');
+    });
+
+    expect(screen.getByLabelText(/Species/).value).toBe('Dog');
+    expect(screen.getByLabelText(/Breed/).value).toBe('Golden Retriever');
+    expect(screen.getByLabelText(/Age/).value).toBe('3');
+    expect(screen.getByLabelText(/Price/).value).toBe('299.99');
+    expect(screen.getByLabelText(/Description/).value).toBe('A friendly dog');
+  });
+
+  it("shows 'Edit Pet' title", async () => {
+    ApiService.getPetById.mockResolvedValue(samplePet);
+    renderPetFormEdit();
+
+    await waitFor(() => {
+      expect(screen.getByText('Edit Pet')).toBeInTheDocument();
+    });
+  });
+
+  it("submit button says 'Update Pet'", async () => {
+    ApiService.getPetById.mockResolvedValue(samplePet);
+    renderPetFormEdit();
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Update Pet' })).toBeInTheDocument();
+    });
+  });
+
+  it('calls updatePet on submit and navigates to pet detail page', async () => {
+    ApiService.getPetById.mockResolvedValue(samplePet);
+    ApiService.updatePet.mockResolvedValue({ ...samplePet, name: 'Buddy Updated' });
+    renderPetFormEdit();
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/Name/).value).toBe('Buddy');
+    });
+
+    fireEvent.change(screen.getByLabelText(/Name/), { target: { value: 'Buddy Updated' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Update Pet' }));
+
+    await waitFor(() => {
+      expect(ApiService.updatePet).toHaveBeenCalledWith('test-id', {
+        name: 'Buddy Updated',
+        species: 'Dog',
+        breed: 'Golden Retriever',
+        age: 3,
+        price: 299.99,
+        description: 'A friendly dog',
+      });
+      expect(mockNavigate).toHaveBeenCalledWith('/pets/test-id');
+    });
+  });
+
+  it('shows error when loading pet data fails', async () => {
+    ApiService.getPetById.mockRejectedValue(new Error('Server error'));
+    renderPetFormEdit();
+
+    await waitFor(() => {
+      expect(screen.getByText('Server error')).toBeInTheDocument();
     });
   });
 });
