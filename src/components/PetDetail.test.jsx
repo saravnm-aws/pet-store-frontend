@@ -30,6 +30,7 @@ const samplePet = {
   age: 3,
   price: 299.99,
   description: 'A friendly dog',
+  status: 'available',
 };
 
 describe('PetDetail', () => {
@@ -134,5 +135,70 @@ describe('PetDetail', () => {
 
     const editLink = screen.getByRole('link', { name: /Edit Pet/ });
     expect(editLink).toHaveAttribute('href', '/pets/test-id/edit');
+  });
+
+  it('displays status badge', async () => {
+    ApiService.getPetById.mockResolvedValue(samplePet);
+    renderPetDetail();
+
+    await waitFor(() => {
+      expect(screen.getByText('Buddy')).toBeInTheDocument();
+    });
+
+    const badges = screen.getAllByText('available');
+    expect(badges.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('shows Mark as Pending and Mark as Adopted buttons when status is available', async () => {
+    ApiService.getPetById.mockResolvedValue({ ...samplePet, status: 'available' });
+    renderPetDetail();
+
+    await waitFor(() => {
+      expect(screen.getByText('Buddy')).toBeInTheDocument();
+    });
+
+    expect(screen.getByRole('button', { name: /Mark as Pending/ })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Mark as Adopted/ })).toBeInTheDocument();
+  });
+
+  it('calls updatePetStatus when status button is clicked', async () => {
+    ApiService.getPetById.mockResolvedValue({ ...samplePet, status: 'available' });
+    ApiService.updatePetStatus.mockResolvedValue({ ...samplePet, status: 'pending' });
+    renderPetDetail();
+
+    await waitFor(() => {
+      expect(screen.getByText('Buddy')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /Mark as Pending/ }));
+
+    await waitFor(() => {
+      expect(ApiService.updatePetStatus).toHaveBeenCalledWith('test-id', 'pending');
+    });
+  });
+
+  it('shows Mark as Available and Mark as Adopted buttons when status is pending', async () => {
+    ApiService.getPetById.mockResolvedValue({ ...samplePet, status: 'pending' });
+    renderPetDetail();
+
+    await waitFor(() => {
+      expect(screen.getByText('Buddy')).toBeInTheDocument();
+    });
+
+    expect(screen.getByRole('button', { name: /Mark as Available/ })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Mark as Adopted/ })).toBeInTheDocument();
+  });
+
+  it('shows Mark as Available button when status is adopted', async () => {
+    ApiService.getPetById.mockResolvedValue({ ...samplePet, status: 'adopted' });
+    renderPetDetail();
+
+    await waitFor(() => {
+      expect(screen.getByText('Buddy')).toBeInTheDocument();
+    });
+
+    expect(screen.getByRole('button', { name: /Mark as Available/ })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Mark as Pending/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Mark as Adopted/ })).not.toBeInTheDocument();
   });
 });
