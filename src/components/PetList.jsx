@@ -61,7 +61,7 @@ function PetList() {
             <div className="pet-card-body">
               <div className="pet-card-header">
                 <h3 className="pet-card-name">{pet.name}</h3>
-                <span className="pet-card-price">${pet.price}</span>
+                <span className="pet-card-price">₹{pet.price}</span>
               </div>
               <span className={`status-badge status-${pet.status || 'available'}`}>
                 {pet.status || 'available'}

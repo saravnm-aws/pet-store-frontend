@@ -28,7 +28,7 @@ const samplePet = {
   species: 'Dog',
   breed: 'Golden Retriever',
   age: 3,
-  price: 299.99,
+  price: 24999,
   description: 'A friendly dog',
   status: 'available',
 };
@@ -58,7 +58,7 @@ describe('PetDetail', () => {
     expect(screen.getByText('Golden Retriever')).toBeInTheDocument();
     expect(screen.getByText('Age')).toBeInTheDocument();
     expect(screen.getByText('3 years')).toBeInTheDocument();
-    expect(screen.getByText('$299.99')).toBeInTheDocument();
+    expect(screen.getByText('₹24999')).toBeInTheDocument();
     expect(screen.getByText('A friendly dog')).toBeInTheDocument();
   });
 

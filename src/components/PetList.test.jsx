@@ -32,8 +32,8 @@ describe('PetList', () => {
 
   it('renders pet cards with name, species, breed, age, price', async () => {
     const pets = [
-      { petId: '1', name: 'Buddy', species: 'Dog', breed: 'Golden Retriever', age: 3, price: 299.99 },
-      { petId: '2', name: 'Whiskers', species: 'Cat', breed: 'Siamese', age: 2, price: 149.99 },
+      { petId: '1', name: 'Buddy', species: 'Dog', breed: 'Golden Retriever', age: 3, price: 24999 },
+      { petId: '2', name: 'Whiskers', species: 'Cat', breed: 'Siamese', age: 2, price: 12499 },
     ];
     ApiService.getAllPets.mockResolvedValue(pets);
     renderPetList();
@@ -49,13 +49,13 @@ describe('PetList', () => {
     expect(screen.getByText(/Breed:.*Siamese/)).toBeInTheDocument();
     expect(screen.getByText(/Age:.*3y/)).toBeInTheDocument();
     expect(screen.getByText(/Age:.*2y/)).toBeInTheDocument();
-    expect(screen.getByText('$299.99')).toBeInTheDocument();
-    expect(screen.getByText('$149.99')).toBeInTheDocument();
+    expect(screen.getByText('₹24999')).toBeInTheDocument();
+    expect(screen.getByText('₹12499')).toBeInTheDocument();
   });
 
   it('renders links to /pets/:id for each pet', async () => {
     const pets = [
-      { petId: 'abc-123', name: 'Polly', species: 'Bird', breed: 'Macaw', age: 5, price: 499.99 },
+      { petId: 'abc-123', name: 'Polly', species: 'Bird', breed: 'Macaw', age: 5, price: 41999 },
     ];
     ApiService.getAllPets.mockResolvedValue(pets);
     renderPetList();
@@ -79,8 +79,8 @@ describe('PetList', () => {
 
   it('displays status badges on pet cards', async () => {
     const pets = [
-      { petId: '1', name: 'Buddy', species: 'Dog', breed: 'Golden Retriever', age: 3, price: 299.99, status: 'available' },
-      { petId: '2', name: 'Whiskers', species: 'Cat', breed: 'Siamese', age: 2, price: 149.99, status: 'pending' },
+      { petId: '1', name: 'Buddy', species: 'Dog', breed: 'Golden Retriever', age: 3, price: 24999, status: 'available' },
+      { petId: '2', name: 'Whiskers', species: 'Cat', breed: 'Siamese', age: 2, price: 12499, status: 'pending' },
     ];
     ApiService.getAllPets.mockResolvedValue(pets);
     renderPetList();
@@ -95,7 +95,7 @@ describe('PetList', () => {
 
   it('renders status filter dropdown when pets exist', async () => {
     const pets = [
-      { petId: '1', name: 'Buddy', species: 'Dog', price: 299.99, status: 'available' },
+      { petId: '1', name: 'Buddy', species: 'Dog', price: 24999, status: 'available' },
     ];
     ApiService.getAllPets.mockResolvedValue(pets);
     renderPetList();
@@ -111,7 +111,7 @@ describe('PetList', () => {
 
   it('calls getAllPets with status when filter is changed', async () => {
     const pets = [
-      { petId: '1', name: 'Buddy', species: 'Dog', price: 299.99, status: 'available' },
+      { petId: '1', name: 'Buddy', species: 'Dog', price: 24999, status: 'available' },
     ];
     ApiService.getAllPets.mockResolvedValue(pets);
     renderPetList();
