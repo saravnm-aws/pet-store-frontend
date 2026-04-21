@@ -7,9 +7,11 @@ function PetList() {
   const [pets, setPets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [statusFilter, setStatusFilter] = useState('');
 
   useEffect(() => {
-    ApiService.getAllPets()
+    setLoading(true);
+    ApiService.getAllPets(statusFilter || undefined)
       .then((data) => {
         setPets(data);
         setLoading(false);
@@ -18,7 +20,7 @@ function PetList() {
         setError(err.message || 'Failed to load pets');
         setLoading(false);
       });
-  }, []);
+  }, [statusFilter]);
 
   if (loading) {
     return <div className="loading-state"><p>Loading pets...</p></div>;
@@ -40,6 +42,18 @@ function PetList() {
   return (
     <div>
       <h2 className="page-title">Available Pets</h2>
+      <div className="filter-bar">
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          aria-label="Filter by status"
+        >
+          <option value="">All Statuses</option>
+          <option value="available">Available</option>
+          <option value="pending">Pending</option>
+          <option value="adopted">Adopted</option>
+        </select>
+      </div>
       <div className="pet-grid">
         {pets.map((pet) => (
           <Link to={`/pets/${pet.petId}`} key={pet.petId} className="pet-card">
@@ -49,6 +63,9 @@ function PetList() {
                 <h3 className="pet-card-name">{pet.name}</h3>
                 <span className="pet-card-price">${pet.price}</span>
               </div>
+              <span className={`status-badge status-${pet.status || 'available'}`}>
+                {pet.status || 'available'}
+              </span>
               <span className="pet-card-species">{pet.species}</span>
               <div className="pet-card-details">
                 {pet.breed && <span>Breed: {pet.breed}</span>}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi } from 'vitest';
 import PetList from './PetList';
@@ -74,6 +74,58 @@ describe('PetList', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent('Error: Network error');
+    });
+  });
+
+  it('displays status badges on pet cards', async () => {
+    const pets = [
+      { petId: '1', name: 'Buddy', species: 'Dog', breed: 'Golden Retriever', age: 3, price: 299.99, status: 'available' },
+      { petId: '2', name: 'Whiskers', species: 'Cat', breed: 'Siamese', age: 2, price: 149.99, status: 'pending' },
+    ];
+    ApiService.getAllPets.mockResolvedValue(pets);
+    renderPetList();
+
+    await waitFor(() => {
+      expect(screen.getByText('Buddy')).toBeInTheDocument();
+    });
+
+    const badges = screen.getAllByText(/available|pending/);
+    expect(badges.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('renders status filter dropdown when pets exist', async () => {
+    const pets = [
+      { petId: '1', name: 'Buddy', species: 'Dog', price: 299.99, status: 'available' },
+    ];
+    ApiService.getAllPets.mockResolvedValue(pets);
+    renderPetList();
+
+    await waitFor(() => {
+      expect(screen.getByText('Buddy')).toBeInTheDocument();
+    });
+
+    const select = screen.getByLabelText('Filter by status');
+    expect(select).toBeInTheDocument();
+    expect(select.value).toBe('');
+  });
+
+  it('calls getAllPets with status when filter is changed', async () => {
+    const pets = [
+      { petId: '1', name: 'Buddy', species: 'Dog', price: 299.99, status: 'available' },
+    ];
+    ApiService.getAllPets.mockResolvedValue(pets);
+    renderPetList();
+
+    await waitFor(() => {
+      expect(screen.getByText('Buddy')).toBeInTheDocument();
+    });
+
+    // Change filter to 'pending'
+    const select = screen.getByLabelText('Filter by status');
+    fireEvent.change(select, { target: { value: 'pending' } });
+
+    await waitFor(() => {
+      expect(ApiService.getAllPets).toHaveBeenCalledWith('pending');
     });
   });
 });

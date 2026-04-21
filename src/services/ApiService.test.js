@@ -16,6 +16,7 @@ describe('ApiService', () => {
       post: vi.fn(),
       put: vi.fn(),
       delete: vi.fn(),
+      patch: vi.fn(),
     };
     axios.create.mockReturnValue(mockAxiosInstance);
 
@@ -39,7 +40,7 @@ describe('ApiService', () => {
 
       const result = await ApiService.getAllPets();
 
-      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/pets');
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/pets', { params: {} });
       expect(result).toEqual(pets);
     });
 
@@ -47,6 +48,16 @@ describe('ApiService', () => {
       mockAxiosInstance.get.mockRejectedValue(new Error('Network Error'));
 
       await expect(ApiService.getAllPets()).rejects.toThrow('Network Error');
+    });
+
+    it('passes status as query parameter when provided', async () => {
+      const pets = [{ petId: '1', name: 'Buddy', status: 'available' }];
+      mockAxiosInstance.get.mockResolvedValue({ data: pets });
+
+      const result = await ApiService.getAllPets('available');
+
+      expect(mockAxiosInstance.get).toHaveBeenCalledWith('/pets', { params: { status: 'available' } });
+      expect(result).toEqual(pets);
     });
   });
 
@@ -128,6 +139,26 @@ describe('ApiService', () => {
       mockAxiosInstance.delete.mockRejectedValue(error);
 
       await expect(ApiService.deletePet('nonexistent')).rejects.toThrow('Not Found');
+    });
+  });
+
+  describe('updatePetStatus', () => {
+    it('calls PATCH /pets/:id/status with status and returns data', async () => {
+      const updated = { petId: 'abc', name: 'Buddy', status: 'pending' };
+      mockAxiosInstance.patch.mockResolvedValue({ data: updated });
+
+      const result = await ApiService.updatePetStatus('abc', 'pending');
+
+      expect(mockAxiosInstance.patch).toHaveBeenCalledWith('/pets/abc/status', { status: 'pending' });
+      expect(result).toEqual(updated);
+    });
+
+    it('propagates errors', async () => {
+      const error = new Error('Bad Request');
+      error.response = { status: 400, data: { error: 'Invalid status' } };
+      mockAxiosInstance.patch.mockRejectedValue(error);
+
+      await expect(ApiService.updatePetStatus('abc', 'invalid')).rejects.toThrow('Bad Request');
     });
   });
 });

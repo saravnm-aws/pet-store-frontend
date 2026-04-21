@@ -10,8 +10,12 @@ const apiClient = axios.create({
 });
 
 const ApiService = {
-  async getAllPets() {
-    const response = await apiClient.get('/pets');
+  async getAllPets(status) {
+    const params = {};
+    if (status) {
+      params.status = status;
+    }
+    const response = await apiClient.get('/pets', { params });
     return response.data;
   },
 
@@ -32,6 +36,11 @@ const ApiService = {
 
   async deletePet(id) {
     const response = await apiClient.delete(`/pets/${id}`);
+    return response.data;
+  },
+
+  async updatePetStatus(id, status) {
+    const response = await apiClient.patch(`/pets/${id}/status`, { status });
     return response.data;
   },
 };
