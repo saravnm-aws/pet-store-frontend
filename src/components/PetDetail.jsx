@@ -70,7 +70,7 @@ function PetDetail() {
       <span className={`status-badge status-${pet.status || 'available'}`}>
         {pet.status || 'available'}
       </span>
-      <div className="pet-detail-price">${pet.price}</div>
+      <div className="pet-detail-price">₹{pet.price}</div>
       <dl className="pet-detail-info">
         <div>
           <dt>Species</dt>

@@ -112,9 +112,9 @@ function PetForm() {
           </div>
         </div>
         <div className="form-group">
-          <label htmlFor="price">Price *</label>
+          <label htmlFor="price">Price (₹) *</label>
           <input id="price" name="price" type="number" step="0.01" value={formData.price} onChange={handleChange}
-            className={errors.price ? 'has-error' : ''} placeholder="0.00" />
+            className={errors.price ? 'has-error' : ''} placeholder="0" />
           {errors.price && <span className="field-error" role="alert">{errors.price}</span>}
         </div>
         <div className="form-group">

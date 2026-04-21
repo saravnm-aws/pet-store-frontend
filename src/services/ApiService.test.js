@@ -35,7 +35,7 @@ describe('ApiService', () => {
 
   describe('getAllPets', () => {
     it('calls GET /pets and returns data', async () => {
-      const pets = [{ petId: '1', name: 'Buddy', species: 'Dog', price: 100 }];
+      const pets = [{ petId: '1', name: 'Buddy', species: 'Dog', price: 8300 }];
       mockAxiosInstance.get.mockResolvedValue({ data: pets });
 
       const result = await ApiService.getAllPets();
@@ -63,7 +63,7 @@ describe('ApiService', () => {
 
   describe('getPetById', () => {
     it('calls GET /pets/:id and returns data', async () => {
-      const pet = { petId: 'abc', name: 'Whiskers', species: 'Cat', price: 50 };
+      const pet = { petId: 'abc', name: 'Whiskers', species: 'Cat', price: 4150 };
       mockAxiosInstance.get.mockResolvedValue({ data: pet });
 
       const result = await ApiService.getPetById('abc');
@@ -83,7 +83,7 @@ describe('ApiService', () => {
 
   describe('createPet', () => {
     it('calls POST /pets with data and returns created pet', async () => {
-      const petData = { name: 'Polly', species: 'Bird', price: 200 };
+      const petData = { name: 'Polly', species: 'Bird', price: 16600 };
       const created = { petId: 'xyz', ...petData };
       mockAxiosInstance.post.mockResolvedValue({ data: created });
 
@@ -104,7 +104,7 @@ describe('ApiService', () => {
 
   describe('updatePet', () => {
     it('calls PUT /pets/:id with data and returns updated pet', async () => {
-      const petData = { name: 'Buddy Updated', species: 'Dog', price: 350 };
+      const petData = { name: 'Buddy Updated', species: 'Dog', price: 29050 };
       const updated = { petId: 'abc', ...petData };
       mockAxiosInstance.put.mockResolvedValue({ data: updated });
 

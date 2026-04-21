@@ -67,14 +67,14 @@ describe('PetForm', () => {
 
     fireEvent.change(screen.getByLabelText(/Name/), { target: { value: 'Buddy' } });
     fireEvent.change(screen.getByLabelText(/Species/), { target: { value: 'Dog' } });
-    fireEvent.change(screen.getByLabelText(/Price/), { target: { value: '299.99' } });
+    fireEvent.change(screen.getByLabelText(/Price/), { target: { value: '24999' } });
     fireEvent.click(screen.getByRole('button', { name: 'Add Pet' }));
 
     await waitFor(() => {
       expect(ApiService.createPet).toHaveBeenCalledWith({
         name: 'Buddy',
         species: 'Dog',
-        price: 299.99,
+        price: 24999,
       });
       expect(mockNavigate).toHaveBeenCalledWith('/');
     });
@@ -88,7 +88,7 @@ describe('PetForm', () => {
     fireEvent.change(screen.getByLabelText(/Species/), { target: { value: 'Cat' } });
     fireEvent.change(screen.getByLabelText(/Breed/), { target: { value: 'Siamese' } });
     fireEvent.change(screen.getByLabelText(/Age/), { target: { value: '2' } });
-    fireEvent.change(screen.getByLabelText(/Price/), { target: { value: '149.99' } });
+    fireEvent.change(screen.getByLabelText(/Price/), { target: { value: '12499' } });
     fireEvent.change(screen.getByLabelText(/Description/), { target: { value: 'A cute cat' } });
     fireEvent.click(screen.getByRole('button', { name: 'Add Pet' }));
 
@@ -98,7 +98,7 @@ describe('PetForm', () => {
         species: 'Cat',
         breed: 'Siamese',
         age: 2,
-        price: 149.99,
+        price: 12499,
         description: 'A cute cat',
       });
     });
@@ -112,7 +112,7 @@ describe('PetForm', () => {
 
     fireEvent.change(screen.getByLabelText(/Name/), { target: { value: 'Buddy' } });
     fireEvent.change(screen.getByLabelText(/Species/), { target: { value: 'Dog' } });
-    fireEvent.change(screen.getByLabelText(/Price/), { target: { value: '100' } });
+    fireEvent.change(screen.getByLabelText(/Price/), { target: { value: '8300' } });
     fireEvent.click(screen.getByRole('button', { name: 'Add Pet' }));
 
     await waitFor(() => {
@@ -126,7 +126,7 @@ describe('PetForm', () => {
 
     fireEvent.change(screen.getByLabelText(/Name/), { target: { value: 'Buddy' } });
     fireEvent.change(screen.getByLabelText(/Species/), { target: { value: 'Dog' } });
-    fireEvent.change(screen.getByLabelText(/Price/), { target: { value: '100' } });
+    fireEvent.change(screen.getByLabelText(/Price/), { target: { value: '8300' } });
     fireEvent.click(screen.getByRole('button', { name: 'Add Pet' }));
 
     await waitFor(() => {
@@ -140,7 +140,7 @@ describe('PetForm', () => {
 
     fireEvent.change(screen.getByLabelText(/Name/), { target: { value: 'Buddy' } });
     fireEvent.change(screen.getByLabelText(/Species/), { target: { value: 'Dog' } });
-    fireEvent.change(screen.getByLabelText(/Price/), { target: { value: '100' } });
+    fireEvent.change(screen.getByLabelText(/Price/), { target: { value: '8300' } });
     fireEvent.click(screen.getByRole('button', { name: 'Add Pet' }));
 
     await waitFor(() => {
@@ -156,7 +156,7 @@ describe('PetForm (edit mode)', () => {
     species: 'Dog',
     breed: 'Golden Retriever',
     age: 3,
-    price: 299.99,
+    price: 24999,
     description: 'A friendly dog',
   };
 
@@ -191,7 +191,7 @@ describe('PetForm (edit mode)', () => {
     expect(screen.getByLabelText(/Species/).value).toBe('Dog');
     expect(screen.getByLabelText(/Breed/).value).toBe('Golden Retriever');
     expect(screen.getByLabelText(/Age/).value).toBe('3');
-    expect(screen.getByLabelText(/Price/).value).toBe('299.99');
+    expect(screen.getByLabelText(/Price/).value).toBe('24999');
     expect(screen.getByLabelText(/Description/).value).toBe('A friendly dog');
   });
 
@@ -231,7 +231,7 @@ describe('PetForm (edit mode)', () => {
         species: 'Dog',
         breed: 'Golden Retriever',
         age: 3,
-        price: 299.99,
+        price: 24999,
         description: 'A friendly dog',
       });
       expect(mockNavigate).toHaveBeenCalledWith('/pets/test-id');
