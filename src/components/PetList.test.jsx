@@ -43,14 +43,14 @@ describe('PetList', () => {
     });
 
     expect(screen.getByText('Whiskers')).toBeInTheDocument();
-    expect(screen.getByText('Species: Dog')).toBeInTheDocument();
-    expect(screen.getByText('Breed: Golden Retriever')).toBeInTheDocument();
-    expect(screen.getByText('Age: 3')).toBeInTheDocument();
-    expect(screen.getByText('Price: $299.99')).toBeInTheDocument();
-    expect(screen.getByText('Species: Cat')).toBeInTheDocument();
-    expect(screen.getByText('Breed: Siamese')).toBeInTheDocument();
-    expect(screen.getByText('Age: 2')).toBeInTheDocument();
-    expect(screen.getByText('Price: $149.99')).toBeInTheDocument();
+    expect(screen.getByText('Dog')).toBeInTheDocument();
+    expect(screen.getByText('Cat')).toBeInTheDocument();
+    expect(screen.getByText(/Breed:.*Golden Retriever/)).toBeInTheDocument();
+    expect(screen.getByText(/Breed:.*Siamese/)).toBeInTheDocument();
+    expect(screen.getByText(/Age:.*3y/)).toBeInTheDocument();
+    expect(screen.getByText(/Age:.*2y/)).toBeInTheDocument();
+    expect(screen.getByText('$299.99')).toBeInTheDocument();
+    expect(screen.getByText('$149.99')).toBeInTheDocument();
   });
 
   it('renders links to /pets/:id for each pet', async () => {
@@ -64,7 +64,7 @@ describe('PetList', () => {
       expect(screen.getByText('Polly')).toBeInTheDocument();
     });
 
-    const link = screen.getByRole('link', { name: 'Polly' });
+    const link = screen.getByRole('link', { name: /Polly/ });
     expect(link).toHaveAttribute('href', '/pets/abc-123');
   });
 

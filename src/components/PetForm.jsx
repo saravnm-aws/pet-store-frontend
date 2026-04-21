@@ -1,15 +1,40 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import ApiService from '../services/ApiService';
 
 function PetForm() {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const isEditMode = Boolean(id);
   const [formData, setFormData] = useState({
     name: '', species: '', breed: '', age: '', price: '', description: '',
   });
   const [errors, setErrors] = useState({});
   const [apiError, setApiError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [loadingPet, setLoadingPet] = useState(false);
+
+  useEffect(() => {
+    if (id) {
+      setLoadingPet(true);
+      ApiService.getPetById(id)
+        .then((data) => {
+          setFormData({
+            name: data.name || '',
+            species: data.species || '',
+            breed: data.breed || '',
+            age: data.age !== undefined ? String(data.age) : '',
+            price: data.price !== undefined ? String(data.price) : '',
+            description: data.description || '',
+          });
+          setLoadingPet(false);
+        })
+        .catch((err) => {
+          setApiError(err.response?.data?.error || err.message || 'Failed to load pet');
+          setLoadingPet(false);
+        });
+    }
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,18 +64,27 @@ function PetForm() {
 
     setSubmitting(true);
     try {
-      await ApiService.createPet(petData);
-      navigate('/');
+      if (isEditMode) {
+        await ApiService.updatePet(id, petData);
+        navigate(`/pets/${id}`);
+      } else {
+        await ApiService.createPet(petData);
+        navigate('/');
+      }
     } catch (err) {
-      const message = (err.response?.data?.error) || err.message || 'Failed to create pet';
+      const message = (err.response?.data?.error) || err.message || (isEditMode ? 'Failed to update pet' : 'Failed to create pet');
       setApiError(message);
       setSubmitting(false);
     }
   };
 
+  if (loadingPet) {
+    return <div className="loading-state"><p>Loading pet data...</p></div>;
+  }
+
   return (
     <div className="form-container">
-      <h2 className="page-title">Add New Pet</h2>
+      <h2 className="page-title">{isEditMode ? 'Edit Pet' : 'Add New Pet'}</h2>
       {apiError && <div className="form-error" role="alert">{apiError}</div>}
       <form onSubmit={handleSubmit}>
         <div className="form-row">
@@ -90,7 +124,7 @@ function PetForm() {
         </div>
         <div className="form-actions">
           <button type="submit" className="btn btn-primary" disabled={submitting}>
-            {submitting ? 'Adding...' : 'Add Pet'}
+            {isEditMode ? (submitting ? 'Updating...' : 'Update Pet') : (submitting ? 'Adding...' : 'Add Pet')}
           </button>
           <Link to="/" className="btn btn-secondary">Cancel</Link>
         </div>

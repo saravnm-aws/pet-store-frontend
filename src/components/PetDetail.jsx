@@ -77,6 +77,7 @@ function PetDetail() {
         <div className="pet-detail-description">{pet.description}</div>
       )}
       <div className="pet-detail-actions">
+        <Link to={`/pets/${id}/edit`} className="btn btn-primary">Edit Pet</Link>
         <button onClick={handleDelete} className="btn btn-danger">Delete Pet</button>
       </div>
     </div>
