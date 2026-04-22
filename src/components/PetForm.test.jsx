@@ -246,4 +246,55 @@ describe('PetForm (edit mode)', () => {
       expect(screen.getByText('Server error')).toBeInTheDocument();
     });
   });
+
+  it('shows validation errors when required fields are cleared and submitted', async () => {
+    ApiService.getPetById.mockResolvedValue(samplePet);
+    renderPetFormEdit();
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/Name/).value).toBe('Buddy');
+    });
+
+    fireEvent.change(screen.getByLabelText(/Name/), { target: { value: '' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Update Pet' }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Name is required')).toBeInTheDocument();
+    });
+    expect(ApiService.updatePet).not.toHaveBeenCalled();
+  });
+
+  it('shows API error when update fails', async () => {
+    ApiService.getPetById.mockResolvedValue(samplePet);
+    ApiService.updatePet.mockRejectedValue({
+      response: { data: { error: 'Update failed' } },
+    });
+    renderPetFormEdit();
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/Name/).value).toBe('Buddy');
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Update Pet' }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Update failed')).toBeInTheDocument();
+    });
+  });
+
+  it('disables submit button and shows Updating... while submitting', async () => {
+    ApiService.getPetById.mockResolvedValue(samplePet);
+    ApiService.updatePet.mockReturnValue(new Promise(() => {}));
+    renderPetFormEdit();
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/Name/).value).toBe('Buddy');
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Update Pet' }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Updating...' })).toBeDisabled();
+    });
+  });
 });

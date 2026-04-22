@@ -42,6 +42,15 @@ describe('App', () => {
     expect(screen.getByTestId('pet-form')).toBeInTheDocument();
   });
 
+  it('renders PetForm at /pets/:id/edit', () => {
+    render(
+      <MemoryRouter initialEntries={['/pets/123/edit']}>
+        <App />
+      </MemoryRouter>
+    );
+    expect(screen.getByTestId('pet-form')).toBeInTheDocument();
+  });
+
   it('renders PetDetail at /pets/:id', () => {
     render(
       <MemoryRouter initialEntries={['/pets/123']}>
